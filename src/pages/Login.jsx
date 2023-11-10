@@ -1,15 +1,15 @@
 import React, { useContext } from 'react'
 import { Context } from '../store/AppContext'
 
-const Register = () => {
+const Login = () => {
     const { store, actions } = useContext(Context)
     return (
         <>
-            {/* <div>Register {store?.username}</div>
+            {/* <div>Login {store?.username}</div>
             <p>{store?.result}</p>
             <button className='btn btn-primary' onClick={actions.saludar}>Imprimir username</button> */}
 
-            <form onSubmit={actions.handleSubmitRegister} className='mx-auto my-5 p-3 border-1 shadow w-25'>
+            <form onSubmit={actions.handleSubmitLogin} className='mx-auto my-5 p-3 border-1 shadow w-25'>
                 <div className="form-group mb-3">
                     <label htmlFor="username" className="form-label">Username:</label>
                     <input type="email" className="form-control" id="username" name="username" onChange={actions.handleChange} value={store.username} />
@@ -18,10 +18,10 @@ const Register = () => {
                     <label htmlFor="password" className="form-label">Password:</label>
                     <input type="password" className="form-control" id="password" name="password" onChange={actions.handleChange} value={store.password} />
                 </div>
-                <button className='btn btn-primary w-100'>Register</button>
+                <button className='btn btn-primary w-100'>Login</button>
             </form>
         </>
     )
 }
 
-export default Register
+export default Login

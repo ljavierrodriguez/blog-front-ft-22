@@ -1,4 +1,4 @@
-import { createContext, useState } from "react";
+import { createContext, useEffect, useState } from "react";
 import getState from "./flux";
 
 export const Context = createContext(null)
@@ -14,6 +14,12 @@ const injectContext = Component => {
                 actions: { ...state.actions}
             }) 
         }))
+
+        useEffect(() => {
+
+            state.actions.checkCurrentUser()
+
+        }, [])
 
 
         return (

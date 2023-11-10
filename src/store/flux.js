@@ -17,6 +17,7 @@ const getState = ({ getStore, getActions, setStore }) => {
             error: null,
             username: '',
             password: '',
+            profile: null,
             result: 0,
         },
         actions: {
@@ -43,12 +44,26 @@ const getState = ({ getStore, getActions, setStore }) => {
                     [name]: value
                 })
             },
-            handleSubmitLogin: e => {
+            handleSubmitRegister: e => {
                 e.preventDefault()
                 const { username, password } = getStore()
                 const { register } = getActions()
                 register({ username, password }) // { username: username, password: password }
                 console.log("Enviando Formulario")
+            },
+            handleSubmitLogin: e => {
+                e.preventDefault()
+                const { username, password } = getStore()
+                const { login } = getActions()
+                login({ username, password }) // { username: username, password: password }
+                console.log("Enviando Formulario")
+            },
+            checkCurrentUser: () => {
+                if(sessionStorage.getItem('currentUser')){
+                    setStore({
+                        currentUser: JSON.parse(sessionStorage.getItem('currentUser'))
+                    })
+                }
             },
             login: (credentials) => {
                 const { apiURL } = getStore();
@@ -64,7 +79,16 @@ const getState = ({ getStore, getActions, setStore }) => {
                 fetch(url, options)
                     .then(response => response.json())
                     .then(data => {
-                        console.log(data)
+                        //console.log(data)
+                        if(data.msg){
+                            toast.error(data.msg)
+                        }else{
+                            setStore({
+                                currentUser: data
+                            })
+                            sessionStorage.setItem('currentUser', JSON.stringify(data));
+                            toast.success(data.success)
+                        }
                     })
                     .catch(error => console.log(error))
             },
@@ -96,6 +120,36 @@ const getState = ({ getStore, getActions, setStore }) => {
                     })
                     .catch(error => console.log(error))
             },
+            getProfile: () => {
+                const { apiURL, currentUser: { access_token } } = getStore();
+                console.log(access_token)
+
+                const url = `${apiURL}/api/profile`;
+                const options = {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + access_token
+                    }
+                }
+                fetch(url, options)
+                    .then(response => response.json())
+                    .then(data => {
+                        //console.log(data)
+
+                        if(data.msg){
+                            toast.error(data.msg)
+                        }else{
+                            setStore({
+                                profile: data.profile
+                            })
+                            toast.success(data.success)
+                        }
+
+                    })
+                    .catch(error => console.log(error))
+
+            }
         }
     }
 }
